@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { UserEntity } from './users/entities/user.entity'
+
 
 @Module({
   imports: [
@@ -10,9 +12,9 @@ import { UsersModule } from './users/users.module';
       port: parseInt(process.env.DB_PORT),
       username: 'aspis',
       password: 'root',
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      synchronize: !!process.env.DB_SYNC,
+      database: 'aspis_db',
+      entities: [UserEntity],
+      synchronize: true,
     }),
     UsersModule,
   ],

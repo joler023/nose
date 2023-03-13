@@ -1,8 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { UserDTO } from '../user.dto';
 import { UsersService } from '../services/user.service';
+import {ApiTags} from '@nestjs/swagger'
+import * as bcrypt from 'bcrypt'
 
 @Controller('users')
+@ApiTags('CRUD')
 export class UsersController {
 
     constructor(private usersService: UsersService){}
@@ -19,8 +22,17 @@ export class UsersController {
 
     @Post()
     async newUser(@Body() user: UserDTO): Promise<UserDTO> {
+        const hashedPassword = await bcrypt.hash(user.password, 12);
+        user.password = hashedPassword;
         return await this.usersService.newUser(user);
     }
+
+    // @Post()
+    // async login(@Body() user: UserDTO): Promise<UserDTO> {
+    //     const hashedPassword = await bcrypt.hash(user.password, 12);
+    //     user.password = hashedPassword;
+    //     return await this.usersService.newUser(user);
+    // }
 
     @Put(':id')
     async updateUser(@Param('id') id: number, @Body() user: UserDTO): Promise<UserDTO> {
@@ -31,5 +43,4 @@ export class UsersController {
     async deleteUser(@Param('id') id: number): Promise<void> {
         return await this.usersService.deleteUser(id);
     }
-
 }
